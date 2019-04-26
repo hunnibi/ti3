@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// no check if file is empty, or doesn't have enough data for calculation
 int main(void)
 {
     FILE *fp = fopen("test.dat", "r");
