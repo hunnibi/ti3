@@ -6,6 +6,7 @@ Tutor: Abraham Söyler
 
 ######Begriffe
 Interrupts:
+
     An interrupt is a hardware mechanism that enables CPU to detect
     that a device needs its attention. 
     
@@ -15,6 +16,7 @@ Interrupts:
     
     
 Polling:
+
     Polling is a protocol that notifies CPU that a device needs its attention.
     It's asking the I/O device whether it needs CPU processing.
     
