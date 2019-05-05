@@ -1,10 +1,10 @@
-###Betriebs- und Kommunikationssysteme | Zettel 2
+### Betriebs- und Kommunikationssysteme | Zettel 2
 Studenten: Evghenii Orenciuc, Jonathan Rex
 Tutor: Abraham Söyler
 
-####Aufgabe 1
+#### Aufgabe 1
 
-######Begriffe
+###### Begriffe
 
 Interrupts:
 
