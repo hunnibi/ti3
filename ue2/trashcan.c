@@ -132,5 +132,5 @@ int delete_file_from_trash(char *file_name) {
     int result = unlink(trash_file_path);
     free(trash_file_path);
 
-    return result;
+    return (result == -1) ? print_err_and_return_err_code(strerror(errno)) : 0;
 }
