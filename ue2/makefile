@@ -2,11 +2,13 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -pedantic
 
 build: clean
-	$(CC) $(CFLAGS) ue2_2.c
+	$(CC) $(CFLAGS) -o trashcan trashcan.c
 run: build
 	touch source.txt
 	echo "Test source file text!" > source.txt
-	./a.out
+	./trashcan -t source.txt
 clean:
-	rm -f a.out
+	rm -f trashcan
+	rm -f source.txt
 	rm -f target.txt
+	rm -f .ti3_trashcan/*
