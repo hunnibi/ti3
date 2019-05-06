@@ -42,7 +42,7 @@ int print_err_and_return_err_code(char *err) {
 int main(int argc, char **argv) {
     if (argc == 1) return print_err_and_return_err_code("Not enough arguments!");
 
-    mkdir("./.ti3_trashcan", 0777);
+    mkdir(TRASHCAN_DIRECTORY_NAME, 0777);
 
     if (contains_move_to_trash_argument(argc, argv)) {
         return move_file_to_trash(argv[2]);
@@ -95,7 +95,8 @@ int move_file_to_trash(char *file_name) {
     }
 
     free(trash_file_path);
-    return result;
+
+    return (result == -1) ? print_err_and_return_err_code(strerror(errno)) : 0;
 }
 
 int list_files_in_trash() {
@@ -123,7 +124,7 @@ int recover_file_from_trash(char *file_name) {
     }
 
     free(trash_file_path);
-    return result;
+    return (result == -1) ? print_err_and_return_err_code(strerror(errno)) : 0;
 }
 
 int delete_file_from_trash(char *file_name) {
