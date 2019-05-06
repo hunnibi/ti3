@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <dirent.h>
 
 #define BUFFER_SIZE 1024
@@ -92,7 +91,7 @@ int move_file_to_trash(char *file_name) {
 
     int result = copy(file_name, trash_file_path);
     if (result != -1) {
-        result = remove(file_name);
+        result = unlink(file_name);
     }
 
     free(trash_file_path);
@@ -120,7 +119,7 @@ int recover_file_from_trash(char *file_name) {
 
     int result = copy(trash_file_path, file_name);
     if (result != -1) {
-        result = remove(trash_file_path);
+        result = unlink(trash_file_path);
     }
 
     free(trash_file_path);
@@ -129,8 +128,8 @@ int recover_file_from_trash(char *file_name) {
 
 int delete_file_from_trash(char *file_name) {
     char *trash_file_path = get_trashcan_relative_file_path(file_name);
-    int result = remove(trash_file_path);
+    int result = unlink(trash_file_path);
     free(trash_file_path);
-    
+
     return result;
 }
