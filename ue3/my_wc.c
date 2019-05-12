@@ -9,41 +9,28 @@
 
 #define BUFFER_SIZE 4096
 
-int count_words_in_string(char *str);
-int print_err_and_return_err_code(char *err);
+int wc_from_stdin();
+int wc_from_file(char *);
 
-// Attention: uses stdin as input. Line buffer size: 4096!
+// Attention: uses stdin as input. Line buffer size(chars per line): 4096!
 int main(int argc, char **argv) {
-
-    FILE *fd;
-    if (argc > 1) {
-        fd = fopen(argv[1], "r");
-        if (fd == NULL) return print_err_and_return_err_code(strerror(errno));
+    if (argc == 1) {
+        return wc_from_stdin();
     } else {
-        fd = stdin;
+        int status;
+        pid_t pid = fork();
+        if (pid == 0) {
+            int result = wc_from_file(argv[1]);
+            pid = fork();
+            return result;
+        } else if(pid > 0) {
+            pid = wait(&status);
+            return wc_from_file(argv[2]);
+        } else {
+            printf("Error: fork failed!\n");
+            exit(EXIT_FAILURE);
+        }
     }
-
-    char buffer[BUFFER_SIZE];
-
-    long int new_line_count = 0;
-    long int word_count = 0;
-    long int byte_count = 0;
-
-    while(fgets(buffer, BUFFER_SIZE, fd) != NULL) {
-        new_line_count++;
-        word_count += count_words_in_string(buffer);
-        byte_count += strlen(buffer);
-    }
-
-    printf("%ld %ld %ld", new_line_count, word_count, byte_count);
-
-    if (argc > 1) printf(" %s\n", argv[1]);
-
-    printf("\n");
-
-    if (argc > 1 && fclose(fd) == EOF) return print_err_and_return_err_code(strerror(errno));
-
-    return 0;
 }
 
 int count_words_in_string(char *str) {
@@ -63,4 +50,45 @@ int count_words_in_string(char *str) {
 int print_err_and_return_err_code(char *err) {
     fprintf(stderr, "Error: %s!\n", err);
     return -1;
+}
+
+int wc_from_stdin() {
+    char buffer[BUFFER_SIZE];
+
+    long int new_line_count = 0;
+    long int word_count = 0;
+    long int byte_count = 0;
+
+    while(fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+        new_line_count++;
+        word_count += count_words_in_string(buffer);
+        byte_count += strlen(buffer);
+    }
+
+    printf("%ld %ld %ld\n", new_line_count, word_count, byte_count);
+
+    return 0;
+}
+
+int wc_from_file(char *filename) {
+    FILE *fd = fopen(filename, "r");
+    if (fd == NULL) return print_err_and_return_err_code(strerror(errno));
+
+    char buffer[BUFFER_SIZE];
+
+    long int new_line_count = 0;
+    long int word_count = 0;
+    long int byte_count = 0;
+
+    while(fgets(buffer, BUFFER_SIZE, fd) != NULL) {
+        new_line_count++;
+        word_count += count_words_in_string(buffer);
+        byte_count += strlen(buffer);
+    }
+
+    printf("%ld %ld %ld %s\n", new_line_count, word_count, byte_count, filename);
+
+    if (fclose(fd) == EOF) return print_err_and_return_err_code(strerror(errno));
+
+    return 0;
 }
