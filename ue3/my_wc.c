@@ -3,12 +3,47 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
-ssize_t getline(char **lineptr, size_t *n, FILE *stream);
+#define BUFFER_SIZE 4096
 
-int print_err_and_return_err_code(char *err) {
-    fprintf(stderr, "Error: %s!\n", err);
-    return -1;
+int count_words_in_string(char *str);
+int print_err_and_return_err_code(char *err);
+
+// Attention: uses stdin as input. Line buffer size: 4096!
+int main(int argc, char **argv) {
+
+    FILE *fd;
+    if (argc > 1) {
+        fd = fopen(argv[1], "r");
+        if (fd == NULL) return print_err_and_return_err_code(strerror(errno));
+    } else {
+        fd = stdin;
+    }
+
+    char buffer[BUFFER_SIZE];
+
+    long int new_line_count = 0;
+    long int word_count = 0;
+    long int byte_count = 0;
+
+    while(fgets(buffer, BUFFER_SIZE, fd) != NULL) {
+        new_line_count++;
+        word_count += count_words_in_string(buffer);
+        byte_count += strlen(buffer);
+    }
+
+    printf("%ld %ld %ld", new_line_count, word_count, byte_count);
+
+    if (argc > 1) printf(" %s\n", argv[1]);
+
+    printf("\n");
+
+    if (argc > 1 && fclose(fd) == EOF) return print_err_and_return_err_code(strerror(errno));
+
+    return 0;
 }
 
 int count_words_in_string(char *str) {
@@ -25,31 +60,7 @@ int count_words_in_string(char *str) {
     return number_of_words;
 }
 
-int main(int argc, char **argv) {
-    if (argc < 2) return print_err_and_return_err_code("Not enough arguments");
-
-    FILE *fp = fopen(argv[1], "r");
-    if (fp == NULL) return print_err_and_return_err_code(strerror(errno));
-
-    char *buffer = NULL;
-    size_t len = 0;
-    ssize_t read;
-
-    long int new_line_count = 0;
-    long int word_count = 0;
-    long int byte_count = 0;
-
-    while((read = getline(&buffer, &len, fp)) != -1) {
-        new_line_count++;
-        word_count += count_words_in_string(buffer);
-        byte_count += read;
-    }
-
-    printf("%ld %ld %ld %s\n", new_line_count, word_count, byte_count, argv[1]);
-
-    free(buffer);
-
-    if (fclose(fp) == EOF) return print_err_and_return_err_code(strerror(errno));
-
-    return 0;
+int print_err_and_return_err_code(char *err) {
+    fprintf(stderr, "Error: %s!\n", err);
+    return -1;
 }
