@@ -3,6 +3,8 @@
 
 #include "scheduler.h"
 
+// Evghenii Orenciuc, Jonathan Rex
+
 struct Process* rr(struct Process* head, struct Process* current) {
     if (head == NULL) {
         fprintf(stderr, "RR: head == NULL\n");
