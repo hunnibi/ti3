@@ -1,9 +1,9 @@
-# CC = gcc
-# CFLAGS = -std=c11 -Wall -Wextra -pedantic
-#
-# build: clean
-# 	$(CC) $(CFLAGS) src.c
-# run: build
-# 	./a.out
-# clean:
-# 	rm -f a.out
+CC = gcc
+CFLAGS = -std=c11 -Wall -Wextra -pedantic
+
+run: build
+	./a.out
+build: clean
+	$(CC) $(CFLAGS) my_ls.c
+clean:
+	rm -f a.out
