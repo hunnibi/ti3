@@ -175,16 +175,3 @@ int print_err_and_return_err_code(char *err)
     fprintf(stderr, "%s\n", err);
     return 1;
 }
-
-/*
-ls
-ls -l : alphabet sort + last modified
-ls -a : show hidden
-ls path/to/dir or path/to/file
-
-ls -la or ls -al should be possible
-
-return 0 : success
-return 1 : minor problems
-return 2 : major problems
-*/
